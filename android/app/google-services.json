@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "179309879409",
+    "project_id": "alura--falc",
+    "storage_bucket": "alura--falc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179309879409:android:b8b17b54f831f2095afbd0",
+        "android_client_info": {
+          "package_name": "com.example.google_alura_falc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHr51NQRvA7_gQhdKBa0QrASIgXt8zplk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
