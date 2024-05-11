@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_alura_falc/modules/gemini_sos/gemini_sos_controller.dart';
 
 // ignore: must_be_immutable
 class CustomRadio extends StatefulWidget {
-  String selectedOption;
   CustomRadio({
     super.key,
-    required this.selectedOption,
   });
 
   @override
@@ -16,6 +16,7 @@ class CustomRadio extends StatefulWidget {
 class CustomRadioState extends State<CustomRadio> {
   @override
   Widget build(BuildContext context) {
+    var controller = Get.find<GeminiSosController>();
     return SizedBox(
       width: 280,
       child: Column(
@@ -23,20 +24,22 @@ class CustomRadioState extends State<CustomRadio> {
           RadioListTile<String>(
             title: const Text('Preciso de Ajuda'),
             value: 'Preciso de Ajuda',
-            groupValue: widget.selectedOption,
+            groupValue: controller.selectedOptionSolicitacao,
             onChanged: (String? value) {
               setState(() {
-                widget.selectedOption = value!;
+                controller.selectedOptionSolicitacao = value!;
+                print(controller.selectedOptionSolicitacao);
               });
             },
           ),
           RadioListTile<String>(
             title: const Text('Quero ajudar'),
             value: 'Quero ajudar',
-            groupValue: widget.selectedOption,
+            groupValue: controller.selectedOptionSolicitacao,
             onChanged: (String? value) {
               setState(() {
-                widget.selectedOption = value!;
+                controller.selectedOptionSolicitacao = value!;
+                print(controller.selectedOptionSolicitacao);
               });
             },
           ),

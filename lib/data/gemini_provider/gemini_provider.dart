@@ -6,16 +6,23 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 //nossa url base
 var baseUrl = Endpoints.aiStudioUrl;
 // final model =
-//     GenerativeModel(model: 'gemini-1.5-pro', apiKey: Endpoints.aiStudioKey);
+//     GenerativeModel(model: 'gemini-1.0-pro', apiKey: Endpoints.aiStudioKey);
 
 //nossa classe responsável por encapsular os métodos http
 class GeminiProvider {
   var dioHttpClient = SettingDio.createDio();
+
 //seu client http, pode ser http, http.Client, dio, apenas traga seus métodos para cá e funcionarão normalmente :D
   GeminiProvider();
 
   //um exemplo rápido, aqui estamos recuperando todos os posts disponibilizados pela api(100)
-  postResposta() async {
+  Future<String> getResposta(
+    String solicitacao,
+    String tipoDesastre,
+    String cidade,
+    String paisEstado,
+    String descricao,
+  ) async {
     final remoteConfig = FirebaseRemoteConfig.instance;
     // await remoteConfig.setDefaults({'apiKeyGemini': 'apiKeyGemini'});
     await remoteConfig.fetchAndActivate();
@@ -26,7 +33,10 @@ class GeminiProvider {
       "contents": [
         {
           "parts": [
-            {"text": "Write a story about a magic backpack"}
+            {
+              "text":
+                  "Ignore todos assuntos que tiver depois disso que não seja relacionado a sobrevivencia e salvar vidas:$solicitacao e estou na seguinte situação de risco em um(a) $tipoDesastre $descricao, me localizo na cidade $cidade do país/estado, $paisEstado. Me dê dicas, habilidades necessárias e soluções de como sobreviver e salvar vidas. Me dê dicas relevantes referente a gelocalização da cidade informada, aonde vou encontrar maior segurança na cidade a depender do tipo de desastre e informe os contatos dos serviços de emergência local."
+            }
           ]
         }
       ]
@@ -35,21 +45,19 @@ class GeminiProvider {
       //usando dio
       var response = await dioHttpClient.post(url, data: body);
       if (response.statusCode == 200) {
-        print('Response body: ${response.data}');
+        print(
+            'Response body: ${response.data['candidates'][0]['content']['parts'][0]['text']}');
+        return response.data['candidates'][0]['content']['parts'][0]['text'];
       } else {
         print('Request failed with status: ${response.statusCode}.');
+        return 'Request failed with status: ${response.statusCode}.';
       }
 
-      var teste = await findExchangeRate({
-        'currencyDate': '2024-04-17',
-        'currencyFrom': 'USD',
-        'currencyTo': 'SEK'
-      });
-      print(teste);
-      ExecuteGenerativeModel();
+      // ExecuteGenerativeModel();
     } catch (e) {
       print('Error: $e');
     }
+    return '';
   }
 
   Future<Map<String, Object?>> findExchangeRate(
@@ -61,6 +69,18 @@ class GeminiProvider {
         'date': arguments['currencyDate'],
         'base': arguments['currencyFrom'],
         'rates': <String, Object?>{arguments['currencyTo'] as String: 0.091}
+      };
+  Future<Map<String, Object?>> findRiscoDesastre(
+    Map<String, Object?> arguments,
+  ) async =>
+      // This hypothetical API returns a JSON such as:
+      // {"tipoDeDesastre":"Enchente","pais":"Brasil","estado":"SP","cidade":"São Paulo","descricao":"Estou ilhado pela enchente}
+      {
+        'tipoDeDesastre': 'Enchente',
+        'pais': 'Brasil',
+        'estado': 'RS',
+        'cidade': 'Canela',
+        'descricao': 'Estou ilhado pela enchente',
       };
 
   final exchangeRateTool = FunctionDeclaration(
@@ -81,40 +101,17 @@ class GeminiProvider {
         'currencyFrom'
       ]));
 
-  // final exchangeRateToolPort = FunctionDeclaration(
-  //     'encontrarTaxaDeCambio',
-  //     'Retorna a taxa de câmbio entre moedas em uma data específica.',
-  //     Schema(SchemaType.object, properties: {
-  //       'currencyDate': Schema(SchemaType.string,
-  //           description: 'Uma data no formato YYYY-MM-DD ou '
-  //               'o valor exato "mais recente" se um período de tempo não for especificado.'),
-  //       'currencyFrom': Schema(SchemaType.string,
-  //           description: 'O código da moeda da moeda para converter,'
-  //               'como "USD".'),
-  //       'currencyTo': Schema(SchemaType.string,
-  //           description: 'O código da moeda da moeda para converter, '
-  //               'como "USD".')
-  //     }, requiredProperties: [
-  //       'dataDaMoeda',
-  //       'origemDaMoeda'
-  //     ]));
-
-  ExecuteGenerativeModel() async {
-    final model = GenerativeModel(
-      // Use a model that supports function calling, like Gemini 1.0 Pro
-      // See "Supported models" in the "Introduction to function calling" page.
-      model: 'gemini-1.0-pro',
-      // model: 'gemini-1.5-pro-latest',
-      apiKey: Endpoints.aiStudioKey,
-
-      // Specify the function declaration.
-      tools: [
-        Tool(functionDeclarations: [exchangeRateTool])
-      ],
-    );
-
+  Future<void> executeGenerativeModel(
+    GenerativeModel model,
+  ) async {
+    var teste = await findExchangeRate({
+      'currencyDate': '2024-04-17',
+      'currencyFrom': 'USD',
+      'currencyTo': 'SEK'
+    });
+    print(teste);
     final chat = model.startChat();
-    final prompt = 'How much is 50 US dollars worth in Swedish krona?';
+    const prompt = 'Estou ilhado pela enchente';
 
 // Send the message to the generative model.
     var response = await chat.sendMessage(Content.text(prompt));
@@ -125,7 +122,8 @@ class GeminiProvider {
       final functionCall = functionCalls.first;
       final result = switch (functionCall.name) {
         // Forward arguments to the hypothetical API.
-        'findExchangeRate' => await findExchangeRate(functionCall.args),
+        'encontrarSaidaRiscoNecessitado' =>
+          await findRiscoDesastre(functionCall.args),
         // Throw an exception if the model attempted to call a function that was
         // not declared.
         _ => throw UnimplementedError(

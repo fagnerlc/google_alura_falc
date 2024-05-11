@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:google_alura_falc/modules/gemini_sos/gemini_sos_binding.dart';
 import 'package:google_alura_falc/modules/gemini_sos/gemini_sos_view.dart';
 import 'package:google_alura_falc/modules/home/bindings/home_binding.dart';
 import 'package:google_alura_falc/modules/home/views/home_view.dart';
@@ -19,6 +20,7 @@ class AppPages {
     GetPage(
       name: _Paths.geminiSos,
       page: () => const GeminiSosView(),
+      binding: GeminiSosBinding(),
     ),
   ];
 }

@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_alura_falc/modules/gemini_sos/gemini_sos_controller.dart';
 
 // ignore: must_be_immutable
 class CustomDropdown extends StatefulWidget {
-  String selectedOption;
-  CustomDropdown({
+  const CustomDropdown({
     super.key,
-    required this.selectedOption,
   });
 
   @override
@@ -31,11 +31,12 @@ class CustomDropdownState extends State<CustomDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.find<GeminiSosController>();
     return Column(
       children: [
         const Text('Selecione o tipo de desastre:'),
         DropdownButton<String>(
-          value: widget.selectedOption,
+          value: controller.selectedOptionTipoDesastre,
           items: _options.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -44,7 +45,7 @@ class CustomDropdownState extends State<CustomDropdown> {
           }).toList(),
           onChanged: (String? newValue) {
             setState(() {
-              widget.selectedOption = newValue!;
+              controller.selectedOptionTipoDesastre = newValue!;
             });
           },
           hint: const Text('Selecione uma opção'),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_alura_falc/modules/gemini_sos/gemini_sos_controller.dart';
 import 'package:google_alura_falc/modules/gemini_sos/widgets/custom_dropdown.dart';
 import 'package:google_alura_falc/modules/gemini_sos/widgets/custom_radio.dart';
 
-class GeminiSosView extends StatelessWidget {
+class GeminiSosView extends GetView<GeminiSosController> {
   const GeminiSosView({super.key});
 
   @override
@@ -14,7 +16,10 @@ class GeminiSosView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SelectableText('data'),
+            Obx(() => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableText(controller.resposta.value),
+                )),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -28,12 +33,10 @@ class GeminiSosView extends StatelessWidget {
                       Wrap(
                         alignment: WrapAlignment.center,
                         children: [
-                          CustomRadio(selectedOption: 'Preciso de Ajuda'),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomDropdown(
-                              selectedOption: 'Enchentes',
-                            ),
+                          CustomRadio(),
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CustomDropdown(),
                           ),
                         ],
                       ),
@@ -42,7 +45,7 @@ class GeminiSosView extends StatelessWidget {
                           SizedBox(
                             width: 200,
                             child: TextFormField(
-                              controller: TextEditingController(),
+                              controller: controller.paisEstadoTec,
                               decoration: const InputDecoration(
                                 labelText: 'País/Estado',
                               ),
@@ -54,7 +57,7 @@ class GeminiSosView extends StatelessWidget {
                           SizedBox(
                             width: 200,
                             child: TextFormField(
-                              controller: TextEditingController(),
+                              controller: controller.cidadeTec,
                               decoration: const InputDecoration(
                                 labelText: 'Cidade',
                               ),
@@ -65,20 +68,32 @@ class GeminiSosView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
-                          controller: TextEditingController(),
+                          controller: controller.descricaoTec,
                           decoration: const InputDecoration(
                             labelText: 'Descreva sua situação de risco:',
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.sos),
-                          label: const Text('Solicitar'),
-                        ),
-                      ),
+                      Obx(() => Visibility(
+                            visible: !controller.isLoading.value,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  controller.onSubmit();
+                                },
+                                icon: const Icon(Icons.sos),
+                                label: const Text('Solicitar'),
+                              ),
+                            ),
+                          )),
+                      Obx(() => Visibility(
+                            visible: controller.isLoading.value,
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          )),
                     ],
                   )),
                 ),
