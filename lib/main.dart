@@ -1,6 +1,8 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:google_alura_falc/core/utils/settings/remote_config_service.dart';
 import 'package:google_alura_falc/firebase_options.dart';
 import 'package:google_alura_falc/routes/app_pages.dart';
 
@@ -9,6 +11,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  RemoteConfigService(remoteConfig: FirebaseRemoteConfig.instance).initialize();
   runApp(const MyApp());
 }
 

@@ -4,6 +4,8 @@ import 'package:google_alura_falc/data/gemini_provider/gemini_provider.dart';
 import 'package:google_alura_falc/data/gemini_repository/gemini_repository.dart';
 
 class HomeController extends GetxController {
+  // RemoteConfigService(remoteConfig: FirebaseRemoteConfig.instance).initialize();
+
   @override
   void onInit() {
     var repository = GeminiRepository(apiClient: GeminiProvider());
