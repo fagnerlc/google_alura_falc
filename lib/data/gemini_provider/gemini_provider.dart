@@ -1,10 +1,11 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+// import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:google_alura_falc/core/utils/constants/endpoints.dart';
 import 'package:google_alura_falc/core/utils/settings/setting_dio.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 //nossa url base
 var baseUrl = Endpoints.aiStudioUrl;
+var apiKeyGemini = Endpoints.aiStudioKey;
 // final model =
 //     GenerativeModel(model: 'gemini-1.0-pro', apiKey: Endpoints.aiStudioKey);
 
@@ -23,10 +24,10 @@ class GeminiProvider {
     String paisEstado,
     String descricao,
   ) async {
-    final remoteConfig = FirebaseRemoteConfig.instance;
+    // final remoteConfig = FirebaseRemoteConfig.instance;
     // await remoteConfig.setDefaults({'apiKeyGemini': 'apiKeyGemini'});
-    await remoteConfig.fetchAndActivate();
-    String apiKeyGemini = remoteConfig.getString('apiKeyGemini');
+    // await remoteConfig.fetchAndActivate();
+    // String apiKeyGemini = remoteConfig.getString('apiKeyGemini');
 
     var url = baseUrl + apiKeyGemini;
     var body = {
@@ -41,6 +42,12 @@ class GeminiProvider {
         }
       ]
     };
+
+    print(solicitacao);
+    print(tipoDesastre);
+    print(cidade);
+    print(paisEstado);
+    print(descricao);
     try {
       //usando dio
       var response = await dioHttpClient.post(url, data: body);
