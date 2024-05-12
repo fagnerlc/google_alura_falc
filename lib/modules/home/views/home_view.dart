@@ -190,7 +190,7 @@ class HomeView extends GetView<HomeController> {
                                   children: [
                                     Icon(Icons.warning,
                                         color: Colors.red, size: 50),
-                                    Text('Clieque aqui',
+                                    Text('Clique aqui',
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 21)),
                                   ],
