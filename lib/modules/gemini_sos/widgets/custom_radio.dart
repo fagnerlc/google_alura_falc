@@ -22,7 +22,7 @@ class CustomRadioState extends State<CustomRadio> {
       child: Column(
         children: [
           RadioListTile<String>(
-            title: const Text('Preciso de Ajuda'),
+            title: const Text('Preciso de ajuda'),
             value: 'Preciso de Ajuda',
             groupValue: controller.selectedOptionSolicitacao,
             onChanged: (String? value) {

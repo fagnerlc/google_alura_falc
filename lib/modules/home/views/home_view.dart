@@ -67,6 +67,7 @@ class HomeView extends GetView<HomeController> {
                     padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: RichText(
+                        textAlign: TextAlign.center,
                         text: const TextSpan(
                           children: [
                             TextSpan(
